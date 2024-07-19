@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +69,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+# collaborative-note-taking-app
+A collaborative note-taking app that allows multiple users to create, edit, and share notes in real-time. Features include user authentication, real-time updates, note management, version history, and a clean user interface. Built with React.js and Firebase.
+>>>>>>> d3163a8b64b12b48b1b2b5c64d954c7175395924
