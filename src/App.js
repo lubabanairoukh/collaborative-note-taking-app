@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from 'firebase/auth';
@@ -8,6 +7,7 @@ import Notes from './Notes';
 import About from './About';
 import Login from './Login';
 import Register from './Register';
+import NoteForm from './NoteForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,6 +43,8 @@ function App() {
           <Route path="/" element={user ? <Notes /> : <Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
+          <Route path="/note-form" element={<NoteForm />} />
+          <Route path="/note-form/:noteId" element={<NoteForm />} />
         </Routes>
       </Layout>
     </Router>

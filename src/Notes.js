@@ -1,19 +1,16 @@
-// src/Notes.js
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot, Timestamp, getDoc } from 'firebase/firestore';
-import { auth, db } from './firebase-config'; // Ensure auth is imported
+import { collection, getDocs, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { auth, db } from './firebase-config'; 
 import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import './Notes.css';
 
 function Notes() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
   const [notes, setNotes] = useState([]);
-  const [editNoteId, setEditNoteId] = useState(null);
   const [filterCategory, setFilterCategory] = useState('');
   const [history, setHistory] = useState([]);
   const [viewingHistoryNoteId, setViewingHistoryNoteId] = useState(null);
+  const navigate = useNavigate();
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -25,37 +22,6 @@ function Notes() {
 
     return () => unsubscribe();
   }, []);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const newNote = { title, content, category, userId: user.uid, updated: Timestamp.now() };
-    if (editNoteId) {
-      const noteRef = doc(db, 'notes', editNoteId);
-      
-      // Save the current state to the history subcollection before updating
-      const currentNoteSnapshot = await getDoc(noteRef);
-      if (currentNoteSnapshot.exists()) {
-        const currentNoteData = currentNoteSnapshot.data();
-        const historyRef = collection(noteRef, 'history');
-        await addDoc(historyRef, { ...currentNoteData, saved: Timestamp.now() });
-      }
-      
-      await updateDoc(noteRef, newNote);
-      setEditNoteId(null);
-    } else {
-      await addDoc(collection(db, 'notes'), newNote);
-    }
-    setTitle('');
-    setContent('');
-    setCategory('');
-  };
-
-  const handleEdit = (note) => {
-    setTitle(note.title);
-    setContent(note.content);
-    setCategory(note.category);
-    setEditNoteId(note.id);
-  };
 
   const handleDelete = async (noteId) => {
     try {
@@ -83,12 +49,6 @@ function Notes() {
     setHistory(historyList);
   };
 
-  const handleRevert = async (noteId, version) => {
-    const noteRef = doc(db, 'notes', noteId);
-    await updateDoc(noteRef, version);
-    setEditNoteId(null);
-    setViewingHistoryNoteId(null);
-  };
 
   const handleLogout = async () => {
     try {
@@ -112,40 +72,13 @@ function Notes() {
           <button onClick={handleLogout} className="logout-button">Logout</button>
         </div>
       </header>
-      <h2>{editNoteId ? 'Edit Note' : 'Create a New Note'}</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Title:</label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <label htmlFor="content">Content:</label>
-        <textarea
-          id="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        ></textarea>
-        <label htmlFor="category">Category:</label>
-        <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          <option value="">Select a category</option>
-          <option value="work">Work</option>
-          <option value="personal">Personal</option>
-          <option value="other">Other</option>
-        </select>
-        <button type="submit">{editNoteId ? 'Update Note' : 'Add Note'}</button>
-      </form>
+      <div style={{ marginBottom: '20px' }}></div> {/* Space between header and button */}
+      <button onClick={() => navigate('/note-form')} className="add-note-button">
+        Add New Note
+      </button>
       <h2>Notes</h2>
-      <label htmlFor="filterCategory">Filter by category:</label>
-      <select id="filterCategory" value={filterCategory} onChange={handleFilterChange}>
+      <label htmlFor="filterCategory" className="label-filter">Filter by category:</label>
+      <select id="filterCategory" value={filterCategory} onChange={handleFilterChange} className="select-filter">
         <option value="">All</option>
         <option value="work">Work</option>
         <option value="personal">Personal</option>
@@ -157,7 +90,7 @@ function Notes() {
             <h3>{note.title}</h3>
             <p>{note.content}</p>
             <p><strong>Category:</strong> {note.category}</p>
-            <button onClick={() => handleEdit(note)}>Edit</button>
+            <button onClick={() => navigate(`/note-form/${note.id}`)}>Edit</button>
             {note.userId === user.uid && (
               <button onClick={() => handleDelete(note.id)}>Delete</button>
             )}
@@ -174,7 +107,6 @@ function Notes() {
                       <p><strong>Title:</strong> {version.title}</p>
                       <p><strong>Content:</strong> {version.content}</p>
                       <p><strong>Category:</strong> {version.category}</p>
-                      <button onClick={() => handleRevert(note.id, version)}>Revert to this version</button>
                     </li>
                   ))}
                 </ul>
