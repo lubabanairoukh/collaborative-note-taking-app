@@ -29,4 +29,4 @@ A collaborative note-taking app that allows multiple users to create, edit, and 
 ### Installation
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/collaborative-note-taking-app.git
+   git clone https://github.com/lubabanairoukh/collaborative-note-taking-app.git
