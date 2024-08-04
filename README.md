@@ -30,3 +30,8 @@ A collaborative note-taking app that allows multiple users to create, edit, and 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/lubabanairoukh/collaborative-note-taking-app.git
+   
+## Demo Video
+
+Watch the demo video of the Simple Collaborative Note-Taking App on [YouTube](https://www.youtube.com/watch?v=n3c6XXehIj4).
+
